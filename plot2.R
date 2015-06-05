@@ -1,0 +1,21 @@
+#load data
+#convert the Date and Time variables to Date/Time classes in 
+#R using the strptime() and as.Date() functions.
+#use data from 2007-02-01 and 2007-02-02
+#create subset data from 2007-02-01 and 2007-02-02
+#plot 1 - Global Active Power (x axis) Frequency (y axis)
+#histogram
+#save it to a PNG file with a width of 480 pixels and a height of 480 pixels
+
+power <- read.table('household_power_consumption.txt', sep=";", head=TRUE, na.string="?")
+
+power.sub=power[power$Date=="1/2/2007"|power$Date=="2/2/2007",]
+
+power.sub <- power.sub[as.Date(strptime(power.sub$Date, "%d/%m/%Y")) %in% date_range,]
+
+#create subset for plots 2, 3, and 4
+write.table(power.sub,file='powersub.txt',sep='|',row.names=FALSE)
+
+png("plot2.png", width = 480, height = 480)
+plot(power.sub$Global_active_power, power.sub$DateTime, type="l", ylab= "Global Active Power(kilowatts)", xlab="")
+dev.off()
