@@ -9,16 +9,21 @@
 
 power <- read.table('household_power_consumption.txt', sep=";", head=TRUE, na.string="?")
 
-power.sub=power[power$Date=="1/2/2007"|power$Date=="2/2/2007",]
+power.sub<- subset(power, (power$Date == "1/2/2007" | power$Date== "2/2/2007")) 
 
-power.sub <- power.sub[as.Date(strptime(power.sub$Date, "%d/%m/%Y")) %in% date_range,]
+# Changing the class of Date variable from character to Date: 
+power.sub$Date <- as.Date(power.sub$Date, format = "%d/%m/%Y")
 
-#create subset for plots 2, 3, and 4
+# Combining the Date and Time variable and creating a new column in dataset named "DateTime":
+power.sub$DateTime <- as.POSIXct(paste(power.sub$Date, power.sub$Time))
+
+#create subset tbale for plots 2, 3, and 4
 write.table(power.sub,file='powersub.txt',sep='|',row.names=FALSE)
 
+
 png("plot3.png", width = 480, height = 480)
-plot(power.sub$Sub_metering_1, power.sub$DateTime, type="l",xlab="", ylab= "Energy sub metering", )
-lines(power.sub$Sub_metering_2, power.sub$DateTime, type="l", col="red")
-lines(power.sub$Sub_metering_3, power.sub$DateTime, type="l", col="blue")
+plot(power.sub$DateTime, power.sub$Sub_metering_1,  type="l",ylab= "Energy sub metering", xlab="" )
+lines(power.sub$DateTime, power.sub$Sub_metering_2,  type="l", col="red")
+lines(power.sub$DateTime, power.sub$Sub_metering_3,  type="l", col="blue")
 legend("topright", c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"), lty=1, col=c("black", "red", "blue"))
 dev.off()

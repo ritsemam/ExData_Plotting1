@@ -9,13 +9,19 @@
 
 power <- read.table('household_power_consumption.txt', sep=";", head=TRUE, na.string="?")
 
-power.sub=power[power$Date=="1/2/2007"|power$Date=="2/2/2007",]
+power.sub<- subset(power, (power$Date == "1/2/2007" | power$Date== "2/2/2007")) 
 
-power.sub <- power.sub[as.Date(strptime(power.sub$Date, "%d/%m/%Y")) %in% date_range,]
+# Changing the class of Date variable from character to Date: 
+power.sub$Date <- as.Date(power.sub$Date, format = "%d/%m/%Y")
 
-#create subset for plots 2, 3, and 4
+# Combining the Date and Time variable and creating a new column in dataset named "DateTime":
+power.sub$DateTime <- as.POSIXct(paste(power.sub$Date, power.sub$Time))
+
+#create subset tbale for plots 2, 3, and 4
 write.table(power.sub,file='powersub.txt',sep='|',row.names=FALSE)
 
+
+# Creating the plot2:
 png("plot2.png", width = 480, height = 480)
-plot(power.sub$Global_active_power, power.sub$DateTime, type="l", ylab= "Global Active Power(kilowatts)", xlab="")
+plot(power.sub$DateTime, power.sub$Global_active_power, type="l", ylab= "Global Active Power(kilowatts)", xlab="")
 dev.off()
